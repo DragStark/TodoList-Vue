@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
+    <title>Document</title>
+    <style>
+      .list li {
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="app">
+        <header>
+          <h1>MY TODO APP</h1>
+          <input
+            class="input"
+            v-model.trim="inputTemp"
+            type="text"
+            v-on:keyup.enter="add()"
+          />
+          <button v-on:click="add()">Them</button>
+        </header>
+        <div class="list-container">
+          <ul class="list">
+            <li v-for="(todo,index) in todos" :key="index" :title="todo.title">
+              <div v-show="editIndex===index">
+                <input
+                  :ref="`input${index}`"
+                  class="editing"
+                  type="text"
+                  :value="todo.title"
+                  v-on:keyup.enter="endEdit(index)"
+                />
+                <button v-on:click="endEdit(index)">xong</button>
+              </div>
+              <div v-show="editIndex!==index">
+                {{index+1}} {{todo.title}}
+                <button v-on:click="startEdit(index)">sua</button>
+                <button v-on:click="remove(index)">xoa</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="main.js"></script>
+</html>
