@@ -7,14 +7,14 @@
         type="text"
         name="edit"
         id="id"
-        v-on:keyup.enter="end"
+        v-on:keyup.enter="handleEndEdit({id, title: editBox})"
       />
-      <button v-on:click="end">xong</button>
+      <button v-on:click="handleEndEdit({id, title: editBox})">xong</button>
     </div>
     <div class="non-edit" v-show="editIndex !== id">
       <input
         v-model="isCompleted"
-        v-on:change="setState"
+        v-on:change="handleSetState({id,isCompleted})"
         type="checkbox"
         name="todo-item"
         :checked="todo.completed"
@@ -22,53 +22,43 @@
       />
       <label
         :class="isCompleted ? 'completed' : 'not-completed'"
-        v-on:dblclick="edit"
+        v-on:dblclick="handleStartEdit(id)"
         for="todo-item"
       >
         {{ todo.title }}</label
       >
-      <button v-on:click="remove">xóa</button>
+      <button v-on:click="handleRemoveItem(id)">xóa</button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters} from 'vuex';
+  
 export default {
   name: "comp-todo-item",
-  props: {
-    editIndex: {
-      type: Number,
-      default: null,
-    },
-    id: Number,
-    todo: Object,
-    doneAll: Boolean,
-  },
-  watch: {
-    doneAll(value) {
-      this.isCompleted = value;
-    },
-  },
-  methods: {
-    remove() {
-      this.$emit("removeItem", this.id);
-    },
-    setState() {
-      this.$emit("setState", this.id, this.isCompleted);
-    },
-    edit() {
-      this.$emit("edit", this.id);
-    },
-    end() {
-      this.$emit("end", this.id, this.editBox);
-    },
-  },
   data() {
     return {
       editBox: this.todo.title,
       isCompleted: this.todo.completed,
     };
   },
+  props: {
+    id: Number,
+    todo: Object,
+  },
+  watch: {
+    doneAll(value) {
+      this.isCompleted = value;
+    },
+  },
+  computed:{
+    ...mapGetters(['editIndex','doneAll'])
+  },
+  methods: {
+    ...mapActions(['handleSetState','handleRemoveItem','handleStartEdit','handleEndEdit']),
+  },
+  
 };
 </script>
 

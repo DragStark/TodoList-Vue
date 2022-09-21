@@ -8,23 +8,17 @@
         type="text"
         name="todo-title"
         placeholder="việc cần làm"
-        v-on:keyup.enter="addItem"
+        v-on:keyup.enter="inputDone"
       />
-      <button class="btn-add" @click="addItem">Thêm</button>
+      <button class="btn-add" @click="inputDone">Thêm</button>
     </div>
     <div class="list-container">
       <ul class="list-item">
         <TodoItem
-          v-for="todo in todos"
+          v-for="todo in filteredTodos"
           :key="todo.id"
           :todo="todo"
           :id="todo.id"
-          :editIndex="editIndex"
-          :doneAll="doneAll"
-          @end="end"
-          @edit="edit"
-          @removeItem="removeItem"
-          @setState="setState"
         />
       </ul>
     </div>
@@ -33,45 +27,32 @@
 
 <script>
 import TodoItem from "./TodoItem.vue";
-
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "comp-todo-list",
-  props: {
-    editIndex: {
-      type: Number,
-      default: null,
-    },
-    todos: Array,
-  },
   data() {
     return {
-      doneAll: false,
+      doneAll: this.doneAll,
       inputTodo: "",
     };
   },
   watch: {
     doneAll(value) {
-      this.$emit("handleDoneAll", value);
+      this.setStateAll(value)
+      this.setDoneAll(value)
     },
+  },
+  computed: {
+    ...mapGetters(['filteredTodos','doneAll']) //lấy todos đã được filter
   },
   methods: {
-    addItem() {
-      this.$emit("handleAddItem", this.inputTodo);
-    },
-    removeItem(index) {
-      this.$emit("handleRemoveItem", index);
-    },
-    setState(index, isChecked) {
-      this.$emit("handleSetState", index, isChecked);
-    },
-    edit(index) {
-      this.$emit("startEdit", index);
-    },
-    end(index, value) {
-      this.$emit("endEdit", index, value);
-    },
+    ...mapActions(['handleAddItem']),
+    ...mapMutations(['setStateAll','setDoneAll']),
+    inputDone(){
+      this.handleAddItem(this.inputTodo)
+      this.inputTodo=""
+    }
   },
-  computed: {},
   components: {
     TodoItem,
   },

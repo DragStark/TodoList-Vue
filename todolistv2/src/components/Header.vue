@@ -1,19 +1,17 @@
 <template>
     <div class="header-title">
       <header>
-        <h1>MY TODO LIST</h1>
+        <h1>{{$store.state.title}}</h1>
     </header>
     </div>
   </template>
   
   <script>
 
-  
+  //import { mapGetters } from 'vuex'
+
   export default {
     name: 'comp-header',
-    components: {
-        
-    }
   }
   </script>
   
